@@ -1,0 +1,18 @@
+[
+    {
+      "name": "John Doe",
+      "phone": "1234567890",
+      "address": "123 Main St"
+    },
+    {
+      "name": "Jane Smith",
+      "phone": "9876543210",
+      "address": "456 Elm St"
+    },
+    {
+      "name": "Alice Johnson",
+      "phone": "5555555555",
+      "address": "789 Oak St"
+    }
+  ]
+  

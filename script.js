@@ -1,92 +1,205 @@
+        // const employees = [
+        //     {
+        //         id: 1,
+        //         name: 'Mark',
+        //         phone: '98982',
+        //         address: 'mdo'
+        //     },
+        //     {
+        //         id: 2,
+        //         name: 'Jacob',
+        //         phone: '5634525',
+        //         address: 'fat'
+        //     },
+        //     {
+        //         id: 3,
+        //         name: 'Larry the Bird',
+        //         phone: '38423048',
+        //         address: 'yt'
+        //     }
+        // ];
 
-function givePrime() {
-    let num1 = parseInt(document.getElementById('p1').value);
-    let num2 = parseInt(document.getElementById('p2').value);
-    let primes = [];
-    
-    for (let i = num1; i <= num2; i++) {
-        if (i < 2) continue;
+        // document.getElementById('add-member').addEventListener('click', () => {
+          
+        //     const nameInput = document.getElementById('name');
+        //     const phoneInput = document.getElementById('phone');
+        //     const addressInput = document.getElementById('address');
+
+            
+        //     const isPhoneUnique = !employees.some(function(employee) {
+        //         return employee.phone === phoneInput.value;
+        //     });            
+
+        //     if (!isPhoneUnique) {
+        //         alert('Phone number must be unique.');
+        //         return;
+        //     }
+
+           
+        //     const newEmployee = {
+        //         id: employees.length + 1,
+        //         name: nameInput.value,
+        //         phone: phoneInput.value,
+        //         address: addressInput.value
+        //     };
+
+            
+        //     employees.push(newEmployee);
+
+           
+        //     updateTable();
+
+            
+        //     const modal = bootstrap.Modal.getInstance(document.getElementById('staticBackdrop'));
+        //     modal.hide();
+
+            
+        //     nameInput.value = '';
+        //     phoneInput.value = '';
+        //     addressInput.value = '';
+        // });
+
         
-        let isPrime = true;
-        for (let j = 2; j <= Math.sqrt(i); j++) {
-            if (i % j === 0) {
-                isPrime = false;
-                break;
-            }
-        }
-        
-        if (isPrime) {
-            primes.push(i);
-        }
-    }
+        // function deleteEmployee(id) {
+            
+        //     const index = employees.findIndex(employee => employee.id === id);
+        //     if (index !== -1) {
+                
+        //         employees.splice(index, 1);
+               
+        //         updateTable();
+        //     }
+        // }
+
+        // // Function to update the table
+        // function updateTable() {
+        //     const tableBody = document.getElementById('employee-table-body');
+        //     tableBody.innerHTML = '';
+
+        //     // Loop through the employees array and create table rows
+        //     employees.forEach((employee, index) => {
+        //         const row = document.createElement('tr');
+        //         row.innerHTML = `
+        //             <th scope="row">${employee.id}</th>
+        //             <td>${employee.name}</td>
+        //             <td>${employee.phone}</td>
+        //             <td>${employee.address}</td>
+        //             <td><button class="btn btn-danger" onclick="deleteEmployee(${employee.id})">Delete</button></td>
+        //         `;
+        //         tableBody.appendChild(row);
+        //     });
+        // }
+
+        // // Initialize the table
+        // updateTable();
+
+
+
+let employees = [];
+let index =0;
+
+
+function fetchEmployees() {
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '/employees.json');
     
-    document.getElementById('result1').innerHTML = primes.join(', ');
-}
-
-
-function reverse(){
-    let nums = parseFloat(document.getElementById('reverse').value);
-    let ans = 0;
-    let temp = nums; 
-    while(temp > 0){
-        ans = ans * 10 + temp % 10;
-        temp = Math.floor(temp / 10); 
-    }
-    document.getElementById('result2').innerHTML = ans;
-}
-
-// function reverse() {
-//     let nums = document.getElementById('reverse').value;
-//     let isNegative = false;
-//     if (nums < 0) {
-//       isNegative = true;
-//       nums = Math.abs(nums);
-//     }
-  
-//     let [intPart, decPart] = nums.toString().split('.');
-//     let ans = 0;
-//     let temp = parseInt(intPart);
-  
-//     while (temp > 0) {
-//       ans = ans * 10 + temp % 10;
-//       temp = Math.floor(temp / 10);
-//     }
-  
-//     if (decPart) {
-//       ans = ans + '.' + decPart.split('').reverse().join('');
-//     }
-  
-//     if (isNegative) {
-//       ans = '-' + ans;
-//     }
-  
-//     document.getElementById('result2').innerHTML = ans;
-//   }
-
-
-function findGreatest(){
-    let num1 =parseFloat(document.getElementById('1').value)
-    let num2 =parseFloat(document.getElementById('2').value)
-    let num3 =parseFloat(document.getElementById('3').value)
-    let num4 =parseFloat(document.getElementById('4').value)
-    let num5 =parseFloat(document.getElementById('5').value)
-
-    let nums =[num1,num2,num3,num4,num5]
-
-    let high = Number.MIN_VALUE;
-
-    for(let i=0; i<5; i++){
-        if(nums[i] > high){
-            high = nums[i];
+    xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            employees = JSON.parse(xhr.responseText);
+            updateTable();
+        } else {
+            console.error('Error fetching employees:', xhr.statusText);
         }
-    }
-
-    document.getElementById('result3').innerHTML = high;
-
-
-
-
+    };
+    
+    xhr.send();
 }
 
 
+function saveEmployees() {
+    const xhr = new XMLHttpRequest();
+    
+    xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            console.log('Employees saved successfully.');
+        } else {
+            console.error('Failed to save employees:', xhr.statusText);
+        }
+    };
+    
+    xhr.open('POST', '/save-employees');
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.send(JSON.stringify(employees));
+}
 
+
+document.getElementById('add-member').addEventListener('click', () => {
+ 
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const addressInput = document.getElementById('address');
+
+    
+    const isPhoneUnique = !employees.some(function(employee) {
+        return employee.phone === phoneInput.value;
+    });
+
+    if (!isPhoneUnique) {
+        alert('Phone number must be unique.');
+        return;
+    }
+
+    
+    const newEmployee = {
+        name: nameInput.value,
+        phone: phoneInput.value,
+        address: addressInput.value
+    };
+
+
+    employees.push(newEmployee);
+
+ 
+    updateTable();
+
+
+    saveEmployees();
+
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('staticBackdrop'));
+    modal.hide();
+
+
+    nameInput.value = '';
+    phoneInput.value = '';
+    addressInput.value = '';
+});
+
+
+function deleteEmployee(index) {
+    employees.splice(index, 1);
+    updateTable();
+    saveEmployees();
+}
+
+
+function updateTable() {
+    const tableBody = document.getElementById('employee-table-body');
+    tableBody.innerHTML = '';
+
+
+    employees.forEach((employee, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <th scope="row">${index + 1}</th>
+            <td>${employee.name}</td>
+            <td>${employee.phone}</td>
+            <td>${employee.address}</td>
+            <td><button class="btn btn-danger" onclick="deleteEmployee(${index})">Delete</button></td>
+        `;
+        tableBody.appendChild(row);
+    });
+}
+
+
+fetchEmployees();
