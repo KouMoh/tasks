@@ -6,6 +6,42 @@
     <title>GitHub Users - API</title>
 </head>
 <body>
-    <button id="id"></button>
+    <button id="button">Load GitHub users</button>
+    <br> <br>
+
+    <h1>GitHub Users</h1>
+    <div class="users"></div>
+
+    <script>
+        document.getElementById('button').addEventListener('click', loadUsers);
+
+        function loadUsers() {
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', 'https://api.github.com/users', true);
+
+            xhr.onload = function() {
+                if (this.status === 200) {
+                    let users = JSON.parse(this.responseText);
+
+                    let output = '';
+
+                    users.forEach(user => {
+                        output += `
+                        <div class="user">
+                            <img src="${user.avatar_url}" width="70" height="70" />
+                            <ul>
+                                <li>ID: ${user.id}</li>
+                                <li>Login: ${user.login}</li>
+                            </ul>
+                        </div>`;
+                    });
+
+                    document.querySelector('.users').innerHTML = output;
+                }
+            }
+
+            xhr.send();
+        }
+    </script>
 </body>
 </html>
